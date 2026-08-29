@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b0f19">
+    <title>HÓA HỌC 8 MASTER - Cân Bằng Phương Trình & Lý Thuyết Toàn Diện</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                <div id="device-badge" class="device-badge">💻 Chế độ: Máy tính</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <button id="btn-voice-toggle" class="btn-voice-toggle" onclick="VoiceEngine.toggleVoice()">
+                        🔊 Giọng Nói: BẬT
+                    </button>
+                    <button class="btn-reset-progress" onclick="TutorApp.resetAllProgress()">
+                        🔄 Đặt Lại Tiến Độ
+                    </button>
+                    <button id="btn-open-handbook" class="btn-handbook" onclick="HandbookModal.open()">
+                        📖 SỔ TAY MẸO FULL COMBO 🔥
+                    </button>
+                </div>
+            </div>
+            <h1 class="app-title">🧑‍🏫 GIA SƯ ẢO HÓA HỌC 8 ⚗️</h1>
+            <p class="app-subtitle">Tách biệt Cân Bằng Phương Trình & Lý Thuyết • Gài bẫy đỉnh cao • Chó sủa & Đấu trường 30 phút</p>
+        </header>
+
+        <!-- TOP 4 NAVIGATION MODES -->
+        <nav class="nav-modes">
+            <button class="mode-btn active" data-mode="equation" onclick="switchMode('equation')">
+                ⚖️ 1. Cân Bằng Phương Trình
+            </button>
+            <button class="mode-btn" data-mode="theory" onclick="switchMode('theory')">
+                💡 2. Lý Thuyết & Bản Chất
+            </button>
+            <button class="mode-btn" data-mode="arena" onclick="switchMode('arena')">
+                ⚔️ 3. Đấu Trường 30 Phút
+            </button>
+            <button class="mode-btn" data-mode="mistakes" onclick="switchMode('mistakes')">
+                📓 4. Sổ Tay Câu Sai (<span id="mistake-badge-count">0</span>)
+            </button>
+        </nav>
+
+        <!-- ========================================================
+             CHẾ ĐỘ 1 & 2: GIA SƯ LEO CẤP (CÂN BẰNG HOẶC LÝ THUYẾT)
+        ======================================================== -->
+        <main id="section-tutor" class="mode-section active">
+            <div class="mastery-dashboard" id="mastery-dashboard-box">
+                <div class="level-info">
+                    <span class="level-icon" id="user-level-icon">⭐</span>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" id="user-track-label">PHẦN: CÂN BẰNG PHƯƠNG TRÌNH</div>
+                        <div id="user-level-title" class="level-title">CẤP 1: CƠ BẢN (Nhập môn)</div>
+                    </div>
+                </div>
+
+                <div class="mastery-meter-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px;">
+                        <span id="mastery-status-text" style="color: #38bdf8;">🎯 Tỷ lệ hiểu bài: 0% (Đúng liên tiếp 8 câu để lên cấp)</span>
+                        <span id="mastery-score-text" style="color: #10b981;">0 / 8 câu đúng</span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="mastery-progress-bar" class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="streak-box">
+                    <div id="streak-count" class="streak-val">0</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">🔥 Chuỗi đúng</div>
+                </div>
+            </div>
+
+            <!-- MAIN 2-COLUMN TUTOR WORKSPACE -->
+            <div class="layout-grid">
+                <!-- CỘT TRÁI: PHÒNG HỌC GIA SƯ -->
+                <div class="card tutor-main-card" id="tutor-card-box">
+                    <div class="tutor-top-bar">
+                        <div>
+                            <span id="eq-trick-badge" class="badge">Mẹo: Kim - Phi - H - O</span>
+                            <h2 id="eq-current-name" style="color: #38bdf8; margin-top: 6px; font-size: 1.3rem;">Tên bài học</h2>
+                        </div>
+                        <div id="step-indicator" class="step-badge">Bước 1 / 3</div>
+                    </div>
+
+                    <!-- Header Equation or Theory Concept Display -->
+                    <div class="equation-banner">
+                        <div id="eq-formula-display" class="equation-large-text">Fe + HCl ➔ FeCl₂ + H₂</div>
+                    </div>
+
+                    <!-- Visual Molecule Models or Theory Graphic Wrapper -->
+                    <div class="molecule-wrapper" id="tutor-visual-wrapper">
+                        <div class="molecule-header-text" id="visual-header-text">👁️ Mô phỏng các gói phân tử (Visual Molecules):</div>
+                        <div id="molecule-canvas" class="molecule-container">
+                            <!-- Dynamic rendered molecule spheres / theory tags -->
+                        </div>
+                    </div>
+
+                    <div class="tutor-dialogue-container">
+                        <div class="tutor-avatar-circle" id="tutor-avatar">🧑‍🏫</div>
+                        <div class="tutor-dialogue-content">
+                            <div id="tutor-dialog-text" class="tutor-dialog-text">
+                                Đang tải bài giảng...
+                            </div>
+                            <div id="tutor-question-text" class="tutor-question-text">
+                                Đang tải câu hỏi...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tutor-options-container" class="options-container">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <div id="tutor-success-box" class="tutor-success-box" style="display: none;">
+                        <h3 id="success-heading">🎉 XUẤT SẮC! EM ĐÃ GIẢI ĐÚNG!</h3>
+                        <p id="success-solution-text" style="color: #38bdf8; font-size: 1.25rem; font-weight: 800; margin: 10px 0;"></p>
+                        <button id="btn-next-action" class="btn-primary" onclick="TutorApp.nextQuestion()">Bài Tiếp Theo ➔</button>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI: LỘ TRÌNH 4 CẤP ĐỘ -->
+                <div class="side-card">
+                    <h3 style="color: #38bdf8; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                        <span>🗺️</span> <span id="sidebar-roadmap-title">Lộ Trình Cân Bằng 4 Cấp</span>
+                    </h3>
+
+                    <div class="tier-list" id="tier-list-container">
+                        <div id="tier-item-1" class="tier-card active">
+                            <div class="tier-head">
+                                <span style="font-weight: 800; color: #f8fafc;" id="tier-title-1">⭐ Cấp 1: Cơ Bản</span>
+                                <span id="tier-status-1" class="tier-status-badge">⚡ Cần 8 câu</span>
+                            </div>
+                            <div class="tier-desc" id="tier-desc-1">Kim loại + Axit, Đơn chất cháy trong Oxy (Thần chú Kim - Phi - H - O).</div>
+                        </div>
+
+                        <div id="tier-item-2" class="tier-card">
+                            <div class="tier-head">
+                                <span style="font-weight: 800; color: #f8fafc;" id="tier-title-2">🌟 Cấp 2: Trung Bình</span>
+                                <span id="tier-status-2" class="tier-status-badge">🔒 Khóa (18 câu)</span>
+                            </div>
+                            <div class="tier-desc" id="tier-desc-2">Tuyệt chiêu Bẻ lẻ thành chẵn (Al₂O₃, FeCl₃) & Bội chung nhỏ nhất.</div>
+                        </div>
+
+                        <div id="tier-item-3" class="tier-card">
+                            <div class="tier-head">
+                                <span style="font-weight: 800; color: #f8fafc;" id="tier-title-3">🔥 Cấp 3: Nâng Cao</span>
+                                <span id="tier-status-3" class="tier-status-badge">🔒 Khóa (28 câu)</span>
+                            </div>
+                            <div class="tier-desc" id="tier-desc-3">Đóng gói nhóm nguyên tử (SO₄, NO₃, OH) & Khử oxit bằng CO, H₂.</div>
+                        </div>
+
+                        <div id="tier-item-4" class="tier-card">
+                            <div class="tier-head">
+                                <span style="font-weight: 800; color: #f8fafc;" id="tier-title-4">👑 Cấp 4: Đỉnh Cao</span>
+                                <span id="tier-status-4" class="tier-status-badge">🔒 Khóa (38 câu)</span>
+                            </div>
+                            <div class="tier-desc" id="tier-desc-4">Phức hợp nhiều nhóm bazơ & Cháy chất hữu cơ phức tạp.</div>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 18px 0;">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="color: #f59e0b; font-size: 1.05rem;">⚡ Tóm Tắt Mẹo Bất Bại</h3>
+                        <button onclick="HandbookModal.openTab('tab-tricks')" style="background: transparent; border: none; color: #38bdf8; font-size: 0.8rem; cursor: pointer; text-decoration: underline; font-weight: 700;">Xem chi tiết ➔</button>
+                    </div>
+                    
+                    <div class="rule-card-item">
+                        <h4>1. Thần chú thứ tự</h4>
+                        <p><strong style="color: #38bdf8;">KIM</strong> ➔ <strong style="color: #10b981;">PHI</strong> ➔ <strong style="color: #f59e0b;">NHÓM</strong> ➔ <strong style="color: #c084fc;">H</strong> ➔ <strong style="color: #f43f5e;">O</strong>.</p>
+                    </div>
+
+                    <div class="rule-card-item">
+                        <h4>2. Bẻ lẻ thành chẵn</h4>
+                        <p>Thấy <strong>O₃, Cl₃</strong> ➔ <strong>Nhân 2</strong> vào trước chất đó ngay!</p>
+                    </div>
+
+                    <div class="rule-card-item">
+                        <h4>3. Đóng gói bưu kiện</h4>
+                        <p>Gặp <strong>SO₄, NO₃, OH</strong> ➔ Coi cả nhóm là 1 cục.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========================================================
+             CHẾ ĐỘ 3: ĐẤU TRƯỜNG SÁT HẠCH 30 CÂU (ĐẾM NGƯỢC 30 PHÚT)
+        ======================================================== -->
+        <main id="section-arena" class="mode-section">
+            <div class="card exam-card">
+                <!-- 1. MÀN HÌNH CHỜ BẮT ĐẦU -->
+                <div id="exam-lobby-area" class="exam-lobby-box">
+                    <div style="font-size: 3.8rem; margin-bottom: 8px;">⚔️</div>
+                    <h2 style="color: #38bdf8; font-size: 1.8rem; margin-bottom: 8px;">ĐẤU TRƯỜNG SÁT HẠCH 30 CÂU</h2>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 650px; margin: 0 auto 24px; line-height: 1.6;">
+                        Bài thi chuẩn hóa toàn diện gồm <strong>30 câu hỏi ngẫu nhiên</strong> (Hóa trị, Cân bằng, Bản chất Hiện tượng, Axit - Bazơ - Muối, Điều chế Oxy/Hiđro và Nồng độ).
+                    </p>
+
+                    <div class="exam-rules-grid">
+                        <div class="rule-item">
+                            <span style="font-size: 1.5rem;">⏱️</span>
+                            <div>
+                                <strong style="color: #f8fafc;">Đếm ngược 30 phút</strong>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Thời gian chuẩn của một bài kiểm tra 1 tiết.</p>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span style="font-size: 1.5rem;">🐕</span>
+                            <div>
+                                <strong style="color: #f43f5e;">Gài bẫy & Chó sủa</strong>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Sai câu nào bị chửi và lưu vào sổ tay.</p>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <div>
+                                <strong style="color: #10b981;">Thang điểm 10/10</strong>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Đạt ≥9.0 điểm: Danh hiệu Thiên tài Hóa học!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-start-exam" onclick="ExamApp.startExam()">
+                        🚀 BẮT ĐẦU BÀI THI 30 PHÚT NGAY ➔
+                    </button>
+                </div>
+
+                <!-- 2. MÀN HÌNH LÀM BÀI THI -->
+                <div id="exam-play-area" style="display: none;">
+                    <div class="exam-header-bar">
+                        <div>
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: #f59e0b;">⚔️ BÀI THI SÁT HẠCH 30 PHÚT</span>
+                            <h2 style="color: #f8fafc; font-size: 1.3rem; margin-top: 6px;">Đấu Trường Kiểm Tra Kiến Thức Toàn Diện Hóa 8</h2>
+                        </div>
+                        <div class="exam-tracker">
+                            <div id="exam-progress-badge" class="step-badge" style="border-color: #f59e0b; color: #f59e0b;">Câu 1 / 30</div>
+                            <div id="exam-timer-badge" class="step-badge timer-badge" style="border-color: #10b981; color: #10b981;">⏱️ 30:00</div>
+                        </div>
+                    </div>
+
+                    <div class="exam-question-box">
+                        <div id="exam-q-text" class="exam-q-text">Đang tải câu hỏi thi...</div>
+                    </div>
+
+                    <div id="exam-options-container" class="options-container" style="margin-top: 18px;">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- 3. MÀN HÌNH KẾT QUẢ -->
+                <div id="exam-result-area" class="exam-result-box" style="display: none;">
+                    <div style="font-size: 3.5rem; margin-bottom: 10px;" id="exam-result-icon">🏆</div>
+                    <h2 id="exam-score-heading" style="font-size: 2rem; color: #38bdf8;">KẾT QUẢ BÀI THI: 10 / 10 ĐIỂM</h2>
+                    <p id="exam-score-sub" style="color: var(--text-muted); font-size: 1.1rem; margin: 10px 0 20px;"></p>
+                    
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="ExamApp.showLobby()">Về Màn Hình Chính ⚔️</button>
+                        <button class="btn-secondary" onclick="switchMode('mistakes')">Xem Sổ Tay Câu Sai 📓</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========================================================
+             CHẾ ĐỘ 4: SỔ TAY CÂU SAI (MISTAKES NOTEBOOK)
+        ======================================================== -->
+        <main id="section-mistakes" class="mode-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h2 style="color: #f43f5e; font-size: 1.5rem; display: flex; align-items: center; gap: 8px;">
+                            <span>❌</span> Sổ Tay Lưu Lại Các Câu Làm Sai
+                        </h2>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">Toàn bộ những câu em bạn trả lời sai trong Cân bằng, Lý thuyết và Đấu trường đều được lưu ở đây để luyện lại.</p>
+                    </div>
+                    <button class="btn-secondary" onclick="MistakeNotebook.clearMistakes()" style="padding: 8px 16px; font-size: 0.85rem;">Xóa Tất Cả 🗑️</button>
+                </div>
+
+                <div id="mistake-list-container" class="mistake-grid">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================================
+         MODAL: SỔ TAY MẸO FULL COMBO
+    ======================================================== -->
+    <div id="handbook-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 style="color: #38bdf8; font-size: 1.6rem; display: flex; align-items: center; gap: 10px;">
+                        <span>📖</span> SỔ TAY MẸO & TRA HÓA TRỊ (FULL COMBO)
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Tổng hợp đầy đủ toàn bộ kiến thức, mẹo nhớ, bài ca và tất cả các dạng phương trình Hóa 8</p>
+                </div>
+                <button class="btn-close-modal" onclick="HandbookModal.close()">✖️ Đóng lại</button>
+            </div>
+
+            <div class="modal-nav-tabs">
+                <button class="modal-tab-btn active" data-tab="tab-summary" onclick="HandbookModal.openTab('tab-summary')">⚡ 1. Tóm Tắt Siêu Tốc 1 Phút</button>
+                <button class="modal-tab-btn" data-tab="tab-valence" onclick="HandbookModal.openTab('tab-valence')">🧪 2. Bảng Tra Hóa Trị & Bài Ca</button>
+                <button class="modal-tab-btn" data-tab="tab-tricks" onclick="HandbookModal.openTab('tab-tricks')">⚗️ 3. Toàn Bộ 6 Dạng Cân Bằng Chi Tiết</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- TAB 1: TÓM TẮT -->
+                <div id="tab-summary" class="modal-content-tab active">
+                    <div class="handbook-section">
+                        <h3 class="hb-title">🎯 1. Thứ Tự "Thần Thánh" Cân Bằng Mọi Phương Trình</h3>
+                        <div class="step-flow-box">
+                            <div class="step-node" style="border-color: #38bdf8;"><strong>1. KIM</strong><br><small>Kim loại (Fe, Al, Cu, Na, Mg...)</small></div>
+                            <div class="step-arrow">➔</div>
+                            <div class="step-node" style="border-color: #10b981;"><strong>2. PHI</strong><br><small>Phi kim (Cl, S, P, C...)</small></div>
+                            <div class="step-arrow">➔</div>
+                            <div class="step-node" style="border-color: #f59e0b;"><strong>3. NHÓM</strong><br><small>Gốc axit (SO₄, NO₃, OH, PO₄)</small></div>
+                            <div class="step-arrow">➔</div>
+                            <div class="step-node" style="border-color: #c084fc;"><strong>4. H</strong><br><small>Hydro (đếm áp chót)</small></div>
+                            <div class="step-arrow">➔</div>
+                            <div class="step-node" style="border-color: #f43f5e;"><strong>5. O</strong><br><small>Oxy (đếm cuối để kiểm tra)</small></div>
+                        </div>
+                    </div>
+
+                    <div class="handbook-grid-2">
+                        <div class="handbook-section">
+                            <h3 class="hb-title" style="color: #f59e0b;">✨ 2. Mẹo "Bẻ Lẻ Thành Chẵn"</h3>
+                            <p>Khi một vế có số chẵn (như O₂, Cl₂) mà vế kia có phân tử chứa số lẻ (như Al₂O₃, Fe₂O₃, FeCl₃):</p>
+                            <div class="hb-formula-box">
+                                <strong>Cách làm:</strong> Đặt ngay <strong>số 2</strong> to đằng trước phân tử lẻ.<br>
+                                <em>Ví dụ:</em> Thấy Al₂O₃ (O₃ lẻ) ➔ Đặt <strong>2Al₂O₃</strong> ➔ được 6 O (chẵn) và 4 Al ➔ Điền <strong>4Al + 3O₂ ➔ 2Al₂O₃</strong>.
+                            </div>
+                        </div>
+
+                        <div class="handbook-section">
+                            <h3 class="hb-title" style="color: #a855f7;">📦 3. Mẹo "Đóng Gói Bưu Kiện"</h3>
+                            <p>Gặp các nhóm nguyên tử (gốc axit/bazơ) xuất hiện nguyên vẹn ở cả 2 vế:</p>
+                            <div class="hb-formula-box">
+                                <strong>Cách làm:</strong> Coi cả nhóm là 1 cục gạch, không đếm lẻ từng nguyên tố.<br>
+                                <em>Ví dụ:</em> Al + H₂SO₄ ➔ Al₂(SO₄)₃ + H₂.<br>
+                                Thấy vế phải có <strong>3 nhóm SO₄</strong> ➔ Điền ngay số 3 trước H₂SO₄ vế trái!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="handbook-section" style="border-left: 4px solid #f43f5e; background: rgba(244, 63, 94, 0.1);">
+                        <h3 class="hb-title" style="color: #f43f5e;">⚠️ 2 Điều Cấm Kỵ Tuyệt Đối</h3>
+                        <p>1. <strong>CẤM sửa số nhỏ ở chân:</strong> Chỉ được điền <strong>SỐ TO ĐỨNG TRƯỚC</strong> phân tử. Sửa số nhỏ sẽ làm biến chất thành chất khác!</p>
+                        <p>2. <strong>Hệ số phải TỐI GIẢN:</strong> Nếu ra dãy hệ số 2:4:2:2 thì phải chia đôi hết thành 1:2:1:1.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: BẢNG TRA -->
+                <div id="tab-valence" class="modal-content-tab">
+                    <div class="handbook-grid-2">
+                        <div>
+                            <input type="text" id="hb-search-input" class="hb-search" placeholder="🔍 Gõ tên nguyên tố hoặc ký hiệu (Fe, Nhôm, SO4, Clo...)..." oninput="HandbookModal.filterTable(this.value)">
+                            <div class="hb-table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên / Ký hiệu</th>
+                                            <th>Hóa trị</th>
+                                            <th>Phân loại</th>
+                                            <th>Mẹo nhớ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hb-valence-tbody">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="hb-title" style="color: #a5b4fc;">📜 Bài Ca Hóa Trị (Thuộc Lòng)</h3>
+                            <div class="poem-box" style="font-size: 0.95rem; line-height: 1.9;">
+                                <div><strong>Kali (K), Natri (Na), Bạc (Ag), Hiđro (H)</strong></div>
+                                <div>Thêm anh <strong>Liti (Li)</strong> hóa <strong>một (I)</strong> chớ phiền.</div>
+                                <div><strong>Clo (Cl)</strong> đứng cạnh một bên,</div>
+                                <div>Cùng anh nhóm <strong>Nitrat (NO₃)</strong>, nhóm <strong>Hiđroxit (OH)</strong> một (I) liền chẳng sai.</div>
+                                <hr style="border: 0; border-top: 1px dashed #4338ca; margin: 8px 0;">
+                                <div><strong>Magiê (Mg), Kẽm (Zn)</strong> với <strong>Canxi (Ca)</strong>,</div>
+                                <div><strong>Bari (Ba), Chì (Pb), Đồng (Cu)</strong> <strong>hai (II)</strong> rồi.</div>
+                                <div>Thêm anh <strong>Oxy (O)</strong> sáng ngời,</div>
+                                <div>Nhóm <strong>Sunfat (SO₄)</strong>, <strong>Cacbonat (CO₃)</strong> cũng Hóa Hai (II) vẹn toàn.</div>
+                                <hr style="border: 0; border-top: 1px dashed #4338ca; margin: 8px 0;">
+                                <div><strong>Nhôm (Al)</strong> Hóa <strong>Ba (III)</strong> đứng vững vàng,</div>
+                                <div>Gốc <strong>Photphat (PO₄)</strong> cũng chung một hàng hóa ba.</div>
+                                <div><strong>Sắt (Fe)</strong> tính khí thật thà:</div>
+                                <div>Gặp axit loãng là <strong>Hai (II)</strong>, oxy nhiệt độ lên <strong>Ba (III)</strong> liền!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: 6 DẠNG -->
+                <div id="tab-tricks" class="modal-content-tab">
+                    <div class="handbook-category-list">
+                        <div class="hb-category-card">
+                            <h4 style="color: #38bdf8;">1️⃣ Dạng 1: Kim Loại Tác Dụng Axit (HCl, H₂SO₄ loãng)</h4>
+                            <p><strong>Đặc điểm:</strong> Kim loại + Axit ➔ Muối + Khí H₂ ↑</p>
+                            <p><strong>Mẹo giải:</strong> Cân bằng Kim loại trước ➔ Cân bằng gốc axit (Cl hoặc SO₄) ➔ Tự động H₂ sẽ khớp.</p>
+                            <div class="hb-example">
+                                <em>Ví dụ 1:</em> Fe + HCl ➔ FeCl₂ + H₂ ➔ <strong>Fe + 2HCl ➔ FeCl₂ + H₂</strong><br>
+                                <em>Ví dụ 2:</em> 2Al + 6HCl ➔ 2AlCl₃ + 3H₂ (BCNN của Cl₃ và H₂ là 6).
+                            </div>
+                        </div>
+
+                        <div class="hb-category-card">
+                            <h4 style="color: #f59e0b;">2️⃣ Dạng 2: Mẹo "Bẻ Lẻ Thành Chẵn" (Đốt Cháy Kim Loại/Phi Kim)</h4>
+                            <p><strong>Đặc điểm:</strong> Có chất mang chỉ số lẻ (O₃, Cl₃, H lẻ) phản ứng với đơn chất chẵn (O₂, Cl₂).</p>
+                            <p><strong>Mẹo giải:</strong> Nhân hệ số 2 vào phân tử có chỉ số lẻ để hóa chẵn.</p>
+                            <div class="hb-example">
+                                <em>Ví dụ 1:</em> Al + O₂ ➔ Al₂O₃ ➔ Thêm 2 vào Al₂O₃ ➔ <strong>4Al + 3O₂ ➔ 2Al₂O₃</strong><br>
+                                <em>Ví dụ 2:</em> Fe + Cl₂ ➔ FeCl₃ ➔ Thêm 2 vào FeCl₃ ➔ <strong>2Fe + 3Cl₂ ➔ 2FeCl₃</strong>
+                            </div>
+                        </div>
+
+                        <div class="hb-category-card">
+                            <h4 style="color: #10b981;">3️⃣ Dạng 3: Phương Pháp "Bội Chung Nhỏ Nhất" (BCNN)</h4>
+                            <p><strong>Đặc điểm:</strong> Một nguyên tố ở 2 vế có chỉ số chân là 2 và 3, hoặc 2 và 5.</p>
+                            <p><strong>Mẹo giải:</strong> Lấy BCNN chia cho chỉ số chân từng vế để tìm hệ số.</p>
+                            <div class="hb-example">
+                                <em>Ví dụ:</em> P + O₂ ➔ P₂O₅. Oxy có chỉ số 2 và 5 ➔ BCNN(2,5) = 10.<br>
+                                ➔ Vế trái: 10 : 2 = 5 O₂ | Vế phải: 10 : 5 = 2 P₂O₅ ➔ Điền <strong>4P + 5O₂ ➔ 2P₂O₅</strong>.
+                            </div>
+                        </div>
+
+                        <div class="hb-category-card">
+                            <h4 style="color: #a855f7;">4️⃣ Dạng 4: Cân Bằng Theo "Nhóm Nguyên Tử" (SO₄, NO₃, OH)</h4>
+                            <p><strong>Đặc điểm:</strong> Các nhóm nguyên tử giữ nguyên trước và sau phản ứng.</p>
+                            <p><strong>Mẹo giải:</strong> Coi nhóm như 1 nguyên tố đơn lẻ. Cân bằng kim loại ➔ Cân bằng nhóm ➔ Cân bằng H, O.</p>
+                            <div class="hb-example">
+                                <em>Ví dụ:</em> NaOH + Fe₂(SO₄)₃ ➔ Fe(OH)₃ + Na₂SO₄.<br>
+                                ➔ Có 2 Fe, 3 nhóm SO₄ ➔ Điền <strong>6NaOH + Fe₂(SO₄)₃ ➔ 2Fe(OH)₃ + 3Na₂SO₄</strong>.
+                            </div>
+                        </div>
+
+                        <div class="hb-category-card">
+                            <h4 style="color: #ec4899;">5️⃣ Dạng 5: Phản Ứng Cháy Hợp Chất Hữu Cơ (C - H - O)</h4>
+                            <p><strong>Đặc điểm:</strong> Chất hữu cơ + O₂ ➔ CO₂ + H₂O</p>
+                            <p><strong>Mẹo giải:</strong> Luôn cân bằng theo thứ tự nghiêm ngặt: <strong>C ➔ H ➔ O</strong>.</p>
+                            <div class="hb-example">
+                                <em>Ví dụ 1:</em> CH₄ + O₂ ➔ CO₂ + H₂O ➔ <strong>CH₄ + 2O₂ ➔ CO₂ + 2H₂O</strong><br>
+                                <em>Ví dụ 2:</em> C₂H₂ + O₂ ➔ CO₂ + H₂O ➔ Nhân 2 làm chẵn C₂H₂ ➔ <strong>2C₂H₂ + 5O₂ ➔ 4CO₂ + 2H₂O</strong>.
+                            </div>
+                        </div>
+
+                        <div class="hb-category-card">
+                            <h4 style="color: #6366f1;">6️⃣ Dạng 6: Khử Oxit Kim Loại Bằng CO và H₂</h4>
+                            <p><strong>Đặc điểm:</strong> Oxit kim loại + CO (hoặc H₂) ➔ Kim loại + CO₂ (hoặc H₂O)</p>
+                            <p><strong>Mẹo giải:</strong> <em>1 CO (hoặc 1 H₂) cướp đúng 1 nguyên tử Oxy</em>. Oxit có bao nhiêu O thì cần bấy nhiêu CO/H₂!</p>
+                            <div class="hb-example">
+                                <em>Ví dụ:</em> Fe₂O₃ có 3 O ➔ Cần 3 CO ➔ <strong>Fe₂O₃ + 3CO ➔ 2Fe + 3CO₂</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
